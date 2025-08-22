@@ -22,10 +22,6 @@ input {
   box-sizing: border-box;
 }
 
-input:invalid, select:invalid {
-  border-color: #990000;
-  background-color: #ffdddd;
-}
 
 input:focus:invalid, select:focus:invalid {
   outline: none;

@@ -9,7 +9,7 @@
     <script src="script.js" defer></script>
   </head>
   <body>
-    <form action="" novalidate>
+    <form novalidate>
       <fieldset class="fieldset">
         <legend>Form Validation</legend>
 
@@ -42,10 +42,12 @@
             id="password"
             name="password"
             required
-            minlength="6"
+            minlength="8"
+            pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$"
           />
+          <span class="error" aria-live="polite"></span>
         </div>
-        
+
         <div class="password-field">
           <label for="confirm-password">Confirm Password:</label>
           <input
@@ -53,8 +55,10 @@
             id="confirm-password"
             name="confirm-password"
             required
-            minlength="6"
+            minlength="8"
+            pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$"
           />
+          <span class="error" aria-live="polite"></span>
         </div>
         <button type="submit">Submit</button>
       </fieldset>
