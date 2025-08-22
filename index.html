@@ -1,14 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Form Client Side Validation</title>
-    <link rel="stylesheet" href="reset.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
-</head>
-<body>
-    
-</body>
+  </head>
+  <body>
+    <form action="" novalidate>
+      <fieldset class="fieldset">
+        <legend>Form Validation</legend>
+
+        <div class="email-field">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="country-field">
+          <label for="country">Country:</label>
+          <select id="country" name="country" required>
+            <option value="" selected disabled>Select a country</option>
+            <option value="usa">USA</option>
+            <option value="canada">Canada</option>
+            <option value="uk">UK</option>
+          </select>
+        </div>
+
+        <div class="text-field">
+          <label for="postal-code">Postal Code:</label>
+          <input type="text" id="postal-code" name="postal-code" />
+        </div>
+
+        <div class="password-field">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            minlength="6"
+          />
+        </div>
+        
+        <div class="password-field">
+          <label for="confirm-password">Confirm Password:</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            required
+            minlength="6"
+          />
+        </div>
+        <button type="submit">Submit</button>
+      </fieldset>
+    </form>
+  </body>
 </html>
