@@ -4,7 +4,7 @@
   gap: 1rem;
 }
 
-.country-field {
+.fieldset *{
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -12,6 +12,28 @@
 
 input {
   appearance: none;
+  width: 70%;
+  border: 1px solid #333333;
+  margin: 0;
+
+  font-family: inherit;
+  font-size: 90%;
+
+  box-sizing: border-box;
+}
+
+input:invalid, select:invalid {
+  border-color: #990000;
+  background-color: #ffdddd;
+}
+
+input:focus:invalid, select:focus:invalid {
+  outline: none;
+}
+
+input[type="email"] {
+  appearance: none;
+
   width: 100%;
   border: 1px solid #333333;
   margin: 0;
@@ -20,4 +42,26 @@ input {
   font-size: 90%;
 
   box-sizing: border-box;
+}
+
+/* error message styles */
+.error {
+  width: 100%;
+  padding: 0;
+
+  font-size: 80%;
+  color: white;
+  background-color: #990000;
+  border-radius: 0 0 5px 5px;
+
+  box-sizing: border-box;
+}
+
+.error.invalid {
+  padding: 0.3em;
+}
+
+.error.valid{
+    padding: 0.3em;
+    background-color: green;
 }
