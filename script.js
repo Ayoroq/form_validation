@@ -1,33 +1,32 @@
 const form = document.querySelector("form");
 const email = document.querySelector("#email");
 const emailError = document.querySelector("#email + span.error");
+const country = document.querySelector("#country");
+const countryError = document.querySelector("#country + span.error");
 const postalCode = document.querySelector("#postal-code");
 const postalCodeError = document.querySelector("#postal-code + span.error");
-const country = document.querySelector("#country");
 const password = document.querySelector("#password");
+const passwordError = document.querySelector("#password + span.error");
 const confirmPassword = document.querySelector("#confirm-password");
+const confirmPasswordError = document.querySelector(
+  "#confirm-password + span.error"
+);
 
-email.addEventListener("input", (event) => {
+function validateEmail() {
   if (email.validity.valid) {
-    emailError.textContent = ""; // Remove the message content
-    emailError.className = "error valid"; // Removes the `invalid` class
+    showValid(emailError);
+    return true;
   } else {
-    // If there is still an error, show the correct error
-    showEmailError();
+    if (email.validity.valueMissing) {
+      showError(emailError, "You need to enter an email address.");
+    } else if (email.validity.typeMismatch) {
+      showError(emailError, "Entered value needs to be an email address.");
+    }
+    return false;
   }
-});
-
-function showEmailError() {
-  if (email.validity.valueMissing) {
-    // If empty
-    emailError.textContent = "You need to enter an email address.";
-  } else if (email.validity.typeMismatch) {
-    // If it's not an email address,
-    emailError.textContent = "Entered value needs to be an email address.";
-  }
-  // Add the `invalid` class
-  emailError.className = "error invalid";
 }
+
+email.addEventListener("input", validateEmail);
 
 // function to show error messages
 function showError(errorElement, message) {
@@ -41,26 +40,6 @@ function showValid(errorElement) {
   errorElement.className = "error valid";
 }
 
-// event listener for the submit event
-// This is triggered when the user clicks the submit button
-form.addEventListener("submit", (event) => {
-  // if the email field is invalid
-  if (!email.validity.valid) {
-    // display an appropriate error message
-    showEmailError();
-    event.preventDefault(); // Prevent the form from submitting
-  }
-  if (!validatePostalCode()) {
-    // if the postal code is invalid, prevent form submission
-    event.preventDefault();
-  }
-  // validate the password and confirm password fields
-  if (!validatePassword()) {
-    // if the password validation fails, prevent form submission
-    event.preventDefault();
-  }
-});
-
 // function to validate the postal code
 // This function checks the postal code based on the selected country
 // It uses regular expressions to validate the format of the postal code
@@ -68,11 +47,11 @@ function validatePostalCode() {
   const pattern = {
     usa: [
       /^[0-9]{5}(?:-[0-9]{4})?$/,
-      "US postal codes must have exactly 5 digits: e.g. 12345 or 12345-1234",
+      "US postal codes must be 5 or 9 digits: e.g. 12345 or 12345-1234",
     ],
     canada: [
       /^(?:[A-Z]\d[A-Z][ -]?\d[A-Z]\d)$/i,
-      "Canadian postal codes must follow the pattern A1A 1A1: e.g. K1A 0B1 or K1A0B1",
+      "Canadian postal codes must follow the pattern A1A 1A1 format",
     ],
     uk: [
       /^([A-Z]{1,2}\d{1,2}[A-Z]?)(\d[A-Z]{2})$/i,
@@ -80,79 +59,65 @@ function validatePostalCode() {
     ],
   };
 
-  const countryValue = document.querySelector("#country").value;
+  const countryValue = country.value;
   const postalCodeValue = postalCode.value.trim();
   let postalCodeValidated;
 
-  // if there's a country selected and the postal code matches the pattern
-  if (countryValue && pattern[countryValue][0].test(postalCodeValue)) {
-    showValid(postalCodeError);
-    postalCodeValidated = true;
-  } else if (!countryValue && !postalCodeValue) {
+  // if there's no country selected and the postal code matches the pattern
+  if (countryValue === "" && postalCodeValue !== "") {
     showError(
       postalCodeError,
-      "Please select a country and enter a postal code."
+      "Please select a country to validate the postal code."
     );
-    postalCodeValidated = false;
-  } else if (countryValue && pattern[countryValue]) {
-    showError(postalCodeError, pattern[countryValue][1]);
-    postalCodeValidated = false;
+    return false;
+  } else if (countryValue === "" && postalCodeValue === "") {
+    showError(postalCodeError, "Please enter a postal code.");
+    return false;
+  } else if (countryValue !== "" && postalCodeValue === "") {
+    showError(postalCodeError, "Please enter a postal code.");
+    return false;
   } else {
-    showError(postalCodeError, "Please enter a valid postal code.");
-    postalCodeValidated = false;
+    postalCodeValidated = pattern[countryValue][0].test(postalCodeValue);
   }
-  return postalCodeValidated;
+
+  if (postalCodeValidated) {
+    showValid(postalCodeError);
+    return true;
+  } else {
+    showError(postalCodeError, pattern[countryValue][1]);
+    return false;
+  }
 }
 
 function validatePassword() {
-  const passwordValue = document.querySelector("#password");
-  const passwordError = document.querySelector("#password + span.error");
-  const confirmPasswordValue = document.querySelector("#confirm-password");
-  const confirmPasswordError = document.querySelector(
-    "#confirm-password + span.error"
-  );
-
-  // checking the normal password field
-  // if the password is empty
-  if (passwordValue.validity.valueMissing) {
-    showError(passwordError, "Password is required.");
-    return;
-  }
-  // if the password is too short
-  if (passwordValue.validity.tooShort) {
-    showError(passwordError, "Password must be at least 8 characters long.");
-    return;
-  }
-  // if password does not match the required pattern
-  if (passwordValue.validity.patternMismatch) {
-    showError(
-      passwordError,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number."
-    );
-    return;
+  // First validate the password field
+  if (!password.validity.valid) {
+    if (password.validity.valueMissing) {
+      showError(passwordError, "Please enter a password.");
+    } else if (password.validity.tooShort) {
+      showError(
+        passwordError,
+        `Password must be at least ${password.minLength} characters. You are currently using ${password.value.length} characters.`
+      );
+    } else if (password.validity.patternMismatch) {
+      showError(
+        passwordError,
+        "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+      );
+    }
+    return false;
   }
 
-  // checking the confirm password field
-  if (
-    passwordValue.validity.valid &&
-    confirmPasswordValue.validity.valueMissing
-  ) {
-    showValid(passwordError);
-    showError(confirmPasswordError, "Please confirm your password.");
-  }
-  // if the passwords match
-  else if (
-    passwordValue.validity.valid &&
-    confirmPasswordValue.validity.valid &&
-    passwordValue.value === confirmPasswordValue.value
-  ) {
-    showValid(passwordError);
+  // Password is valid, now check confirm password
+  showValid(passwordError);
+
+  if (password.validity.valid && confirmPassword.validity.valid) {
+    if (password.value !== confirmPassword.value) {
+      showError(confirmPasswordError, "Passwords do not match.");
+      return false; // passwords do not match, return false
+    }
     showValid(confirmPasswordError);
     return true; // passwords match, return true
-  } else {
-    showError(passwordError, "Passwords do not match.");
-    showError(confirmPasswordError, "Passwords do not match.");
-    return false; // passwords do not match, return false
   }
 }
 
@@ -161,3 +126,34 @@ country.addEventListener("change", validatePostalCode);
 
 password.addEventListener("input", validatePassword);
 confirmPassword.addEventListener("input", validatePassword);
+
+// event listener for the submit event
+form.addEventListener("submit", (event) => {
+  // The `validate...` functions show the UI errors.
+  // We just need to check their return values to see if the form is valid.
+  const isEmailValid = validateEmail();
+  const isPostalCodeValid = validatePostalCode();
+  const isPasswordValid = validatePassword();
+
+  // The `validatePassword` function doesn't check for an empty confirm password field
+  // if the user hasn't typed in it. We need to enforce that on submit.
+  let isConfirmPasswordRequiredAndMissing = false;
+  if (
+    password.validity.valid &&
+    (confirmPassword.validity.valueMissing ||
+      confirmPassword.validity.tooShort ||
+      confirmPassword.validity.patternMismatch)
+  ) {
+    showError(confirmPasswordError, "Please confirm your password.");
+    isConfirmPasswordRequiredAndMissing = true;
+  }
+
+  if (
+    !isEmailValid ||
+    !isPostalCodeValid ||
+    !isPasswordValid ||
+    isConfirmPasswordRequiredAndMissing
+  ) {
+    event.preventDefault(); // Prevent the form from submitting
+  }
+});

@@ -4,33 +4,19 @@
   gap: 1rem;
 }
 
-.fieldset *{
+/* Target the direct div children of the fieldset for layout */
+.fieldset > div {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-input {
-  appearance: none;
-  width: 70%;
-  border: 1px solid #333333;
-  margin: 0;
-
-  font-family: inherit;
-  font-size: 90%;
-
-  box-sizing: border-box;
-}
-
-
-input:focus:invalid, select:focus:invalid {
+input,select{
   outline: none;
 }
 
-input[type="email"] {
-  appearance: none;
-
-  width: 100%;
+input {
+  width: 100%; /* Make all inputs consistent width */
   border: 1px solid #333333;
   margin: 0;
 
@@ -38,6 +24,15 @@ input[type="email"] {
   font-size: 90%;
 
   box-sizing: border-box;
+}
+
+input.invalid, select.invalid {
+  border-color: #990000;
+  background-color: #ffdddd;
+}
+
+input:focus:invalid, select:focus:invalid {
+  outline: none;
 }
 
 /* error message styles */

@@ -27,6 +27,7 @@
             <option value="canada">Canada</option>
             <option value="uk">UK</option>
           </select>
+          <span class="error" aria-live="polite"></span>
         </div>
 
         <div class="text-field">
@@ -55,8 +56,6 @@
             id="confirm-password"
             name="confirm-password"
             required
-            minlength="8"
-            pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$"
           />
           <span class="error" aria-live="polite"></span>
         </div>
